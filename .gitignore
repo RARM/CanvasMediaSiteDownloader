@@ -1,0 +1,5 @@
+# Don't track some states from browser. In my script, saved in `auth` foler.
+auth/
+
+# Use test-urls to keep track of sample test URLs for sources.
+test-urls/
