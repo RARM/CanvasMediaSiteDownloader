@@ -1,21 +1,15 @@
-"""
-Short description.
-
-Longer description goes here.
-
-Author: Rodolfo Andrés Rivas Matta
-Date: 2026-04-10
-"""
-
-import argparse
 import logging
 
 from playwright.sync_api import sync_playwright
 
-PROGRAM_NAME = 'MediaSiteDownloader'
-__author__ = "Rodolfo Andrés Rivas Matta"
-__version__ = "0.0.1"
-logger = logging.getLogger(PROGRAM_NAME)
+logger = logging.getLogger(__name__)
+
+def downloader(
+    media_site_page_url: str,
+    destination: str,
+    login_url: str = None,
+  ):
+  return
 
 def save_auth(url: str) -> list[str]:
   with sync_playwright() as p:
@@ -43,20 +37,3 @@ def open_protected_page():
 
     browser.close()
   return
-
-# ===========
-# Main Driver
-# ===========
-
-if __name__ == '__main__':
-  parser = argparse.ArgumentParser(
-    prog=PROGRAM_NAME,
-    description='This script can download all lectures from a MediaSite page.'
-  )
-  parser.add_argument('URL', help='location of the page with the lectures')
-  args = parser.parse_args()
-
-  logging.basicConfig(level=logging.INFO)
-
-  logger.info(f'received "{args.URL}" as URL')
-  open_protected_page()

@@ -1,0 +1,15 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "CMSD"
+version = "0.0.1"
+description = "A simple CLI tool."
+requires-python = ">=3.9"
+dependencies = [
+    "playwright"
+]
+
+[project.scripts]
+cmsd = "cmsd.cli:main"

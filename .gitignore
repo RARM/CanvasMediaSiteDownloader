@@ -3,3 +3,6 @@ auth/
 
 # Use test-urls to keep track of sample test URLs for sources.
 test-urls/
+
+# Folder for the script output during tests.
+test-out/
