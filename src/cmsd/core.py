@@ -1,3 +1,5 @@
+from .utils import get_destination_dir
+
 import logging
 
 from playwright.sync_api import sync_playwright
@@ -9,6 +11,11 @@ def downloader(
     destination: str,
     login_url: str = None,
   ):
+  # 1. Get and check destination.
+  abs_path = get_destination_dir(destination)
+  # 2. Retrieve for metadata file.
+  # 3. Retrieve video urls.
+  # 4. Download videos.
   return
 
 def save_auth(url: str) -> list[str]:
