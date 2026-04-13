@@ -8,16 +8,24 @@ from playwright.sync_api import sync_playwright
 logger = logging.getLogger(__name__)
 
 def downloader(
-    media_site_page_url: str,
+    download_url: str,
     destination: str,
     login_url: str = None,
+    single_video: bool = False
   ):
   # 1. Get and check destination.
   abs_path = get_destination_dir(destination)
-  # 2. Retrieve for metadata file.
+  # 2. Retrieve metadata file.
   conf = DownloadConfiguration(abs_path)
-  # 3. Retrieve video urls.
-  # 4. Download videos.
+  # 3. Set download URL.
+  if conf.is_new():
+    conf.setDownloadURL(download_url)
+  else:
+    if conf.getDownloadURL() != download_url:
+      logger.warning('download URL does not match existing one; omitting new')
+      download_url = conf.getDownloadURL()
+  # 4. Directly download if single video mode.
+  # 5. Retrieve video urls if multiple, and download.
   return
 
 def save_auth(url: str) -> list[str]:
