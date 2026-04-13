@@ -6,3 +6,6 @@ test-urls/
 
 # Folder for the script output during tests.
 test-out/
+
+# Don’t track Python cache.
+__pycache__/
