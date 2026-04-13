@@ -31,16 +31,20 @@ def main():
   )
   parser.add_argument('url', help='location of the page with the lectures')
   parser.add_argument(
-    '-l', '--login-url',
-    help='URL of login if required to access main catalog'
-  )
-  parser.add_argument(
     '-v', '--verbose', type=int, default=logging.DEBUG, # set to logging.INFO
     help='set the log level; 0 (very verbose) to 50 (only critical)'
   )
   parser.add_argument(
     '-d', '--destination', required=True,
     help='path to the destination folder for the download'
+  )
+  parser.add_argument(
+    '-s', action='store_true',
+    help='if set, treat url as single lecture, not the MediaSite catalog'
+  )
+  parser.add_argument(
+    '-l', '--login-url', action='store_true',
+    help='if set, use URL as login page; manually navigate to lectures'
   )
   args = parser.parse_args()
 
@@ -49,10 +53,11 @@ def main():
 
   # 1. Print passed information.
   if args.login_url:
-    logger.debug(f'configured login_url="{args.login_url}"')
+    logger.debug(f'configured login_url={args.login_url}')
   logger.debug(f'configured url="{args.url}"')
   logger.debug(f'configured destination="{args.destination}"')
-  logger.debug(f'configured verbose="{args.verbose}"')
+  logger.debug(f'configured verbose={args.verbose}')
+  logger.debug(f'configured s={args.s}')
   
   # 2. Call downloader.
-  downloader(args.url, args.destination, args.login_url)
+  downloader(args.url, args.destination, args.login_url, args.s)
