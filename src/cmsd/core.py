@@ -6,7 +6,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-def downloader(
+def driver(
     download_url: str,
     destination: str,
     login_url: bool = False,
@@ -23,5 +23,4 @@ def downloader(
   if single_video and login_url:
     videos.append(scrapper.get_lecture_m3u8()) # Don't forget to update conf.
   # 6. Download retrieved videos.
-  
   return

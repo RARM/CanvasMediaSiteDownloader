@@ -9,7 +9,8 @@ Author: Rodolfo Andrés Rivas Matta
 Date: 2026-04-12
 """
 
-from .core import downloader
+from .core import driver
+from.utils import checks
 
 import argparse
 import logging
@@ -58,6 +59,8 @@ def main():
   logger.debug(f'configured destination="{args.destination}"')
   logger.debug(f'configured verbose={args.verbose}')
   logger.debug(f'configured s={args.s}')
-  
-  # 2. Call downloader.
-  downloader(args.url, args.destination, args.login_url, args.s)
+
+  # 2. Perform checks.
+  if checks():
+    # 3. Call driver.
+    driver(args.url, args.destination, args.login_url, args.s)  
