@@ -35,7 +35,7 @@ def main():
     help='URL of login if required to access main catalog'
   )
   parser.add_argument(
-    '-v', '--verbose', type=int, default=logging.INFO,
+    '-v', '--verbose', type=int, default=logging.DEBUG, # set to logging.INFO
     help='set the log level; 0 (very verbose) to 50 (only critical)'
   )
   parser.add_argument(
@@ -49,10 +49,10 @@ def main():
 
   # 1. Print passed information.
   if args.login_url:
-    logger.info(f'configured login_url="{args.login_url}"')
-  logger.info(f'configured url="{args.url}"')
-  logger.info(f'configured destination="{args.destination}"')
-  logger.info(f'configured verbose="{args.verbose}"')
+    logger.debug(f'configured login_url="{args.login_url}"')
+  logger.debug(f'configured url="{args.url}"')
+  logger.debug(f'configured destination="{args.destination}"')
+  logger.debug(f'configured verbose="{args.verbose}"')
   
   # 2. Call downloader.
   downloader(args.url, args.destination, args.login_url)
