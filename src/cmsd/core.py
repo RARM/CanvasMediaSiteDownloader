@@ -1,3 +1,4 @@
+from .config import DownloadConfiguration
 from .utils import get_destination_dir
 
 import logging
@@ -14,6 +15,7 @@ def downloader(
   # 1. Get and check destination.
   abs_path = get_destination_dir(destination)
   # 2. Retrieve for metadata file.
+  conf = DownloadConfiguration(abs_path)
   # 3. Retrieve video urls.
   # 4. Download videos.
   return
