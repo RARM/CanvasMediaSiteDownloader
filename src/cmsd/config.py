@@ -45,7 +45,7 @@ class DownloadConfiguration:
     """
     return not self.exists
   
-  def __write_attribute(self, attribute: str, value: any) -> None:
+  def __write_file_update(self) -> None:
     """
     Private method to write new (or update) attributes in the config file.
 
@@ -54,7 +54,7 @@ class DownloadConfiguration:
       value (any): Value of the pair.
     """
     with open(self.file_path, 'w') as file:
-      self.data[attribute] = value
+      # self.data[attribute] = value
       json.dump(self.data, file)
 
   def setDownloadURL(self, url: str) -> None:
@@ -64,7 +64,8 @@ class DownloadConfiguration:
     Args:
       url (str): The download URL.
     """
-    self.__write_attribute('download_url', url)
+    self.data['download_url'] = url
+    self.__write_file_update()
 
   def getDownloadURL(self) -> str:
     """
@@ -74,3 +75,21 @@ class DownloadConfiguration:
       str: Download URL.
     """
     return self.data['download_url']
+  
+  def appendLecture(self, lecture: any) -> None:
+    # Create object if it doesn’t exist.
+    if not self.data.get('lectures'):
+      self.data['lectures'] = []
+    # Get lecture (if it already exists).
+    existing_match = next(
+      (
+        item for item in self.data['lectures'] if
+        item.get('title') == lecture['title']
+      )
+      , None
+    )
+    if existing_match: # Update if it exists.
+      existing_match.update(lecture)
+    else: # Append if it does not exist.
+      self.data['lectures'].append(lecture)
+    return self.__write_file_update()

@@ -4,13 +4,9 @@ Script to download lectures from MediaSite by Florida Atlantic University.
 This script can download a multi-video lecture (where there is a video of the
 speaker and another of the presentation) from MediaSite. The script is designed
 for the Florida Atlantic University system.
-
-Author: Rodolfo Andrés Rivas Matta
-Date: 2026-04-12
 """
 
 from .core import driver
-from.utils import checks
 
 import argparse
 import logging
@@ -60,7 +56,5 @@ def main():
   logger.debug(f'configured verbose={args.verbose}')
   logger.debug(f'configured s={args.s}')
 
-  # 2. Perform checks.
-  if checks():
-    # 3. Call driver.
-    driver(args.url, args.destination, args.login_url, args.s)  
+  # 2. Call driver.
+  driver(args.url, args.destination, args.login_url, args.s)  

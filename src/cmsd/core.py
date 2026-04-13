@@ -1,6 +1,7 @@
 from .config import DownloadConfiguration
 from .utils import get_destination_dir
-from .scrapper import Scrapper
+from .scraper import Scraper
+from .downloader import download_videos_set
 
 import logging
 
@@ -16,11 +17,18 @@ def driver(
   abs_path = get_destination_dir(destination)
   # 2. Retrieve metadata file.
   conf = DownloadConfiguration(abs_path)
-  # 3. Start scrapper instance.
-  scrapper = Scrapper(download_url) if login_url else Scrapper()
+  # 3. Start scraper instance.
+  scraper = Scraper(download_url) if login_url else Scraper()
   videos = []
-  # 5. Directly download if single video mode.
+  # 5. Get list of videos (use scraper).
   if single_video and login_url:
-    videos.append(scrapper.get_lecture_m3u8()) # Don't forget to update conf.
+    videos.append(scraper.get_lecture_m3u8())
+    conf.appendLecture(videos[0])
+  else: # Handle catalog (standard mode).
+    pass
+
   # 6. Download retrieved videos.
+  for video in videos:
+    download_videos_set(video, abs_path)
+    # conf.update_lecture_filename
   return
