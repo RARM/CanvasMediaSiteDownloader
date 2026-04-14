@@ -106,8 +106,9 @@ class Scraper:
     if self.login_url:
       self.__login()
     else:
-      # FIXME: logic for un-logged extraction may not be compatible
+      # FIXME: Logic for un-logged extraction may not be compatible.
       self.page.goto(lecture_url)
+      time.sleep(3)
     # 3. Wait for iframe to load and videos to load.
     logger.debug('attempting to start player and track requests')
     frame = self.page.frame_locator('#player-iframe')
@@ -121,6 +122,15 @@ class Scraper:
     # 5. Return manifest urls.
     manifests_list = self.__clean_manifests_list(network_url_requests)
     return {'title': title, 'urls': manifests_list}
+  
+  def get_lecture_m3u8_from_catalog(self, catalog_url: str = None) -> None:
+    """
+    This method retrieves m3u8 files from a MediaSite catalog.
+
+    Args:
+      catalog_url (str): MediaSite catalog URL.
+    """
+    pass
   
 # NOTE: For future implementation of the catalog, using
 # document.querySelectorAll('.watch-link') gets all the clickable lecture

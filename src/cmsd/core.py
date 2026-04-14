@@ -22,10 +22,11 @@ def driver(
   videos = []
   # 5. Get list of videos (use scraper).
   if single_video and login_url:
-    videos.append(scraper.get_lecture_m3u8())
-    conf.appendLecture(videos[0])
+    videos.append(scraper.get_lecture_m3u8(download_url))
+    conf.update_lecture(videos[0])
   else: # Handle catalog (standard mode).
-    pass
+    videos = scraper.get_lecture_m3u8_from_catalog(download_url)
+    conf.update_lectures(videos)
   scraper.cleanup() # Can't use the object after this.
   # 6. Download retrieved videos.
   for video in videos:
