@@ -1,3 +1,5 @@
+from .downloader import VideoData
+
 import logging
 import os
 import json
@@ -47,14 +49,10 @@ class DownloadConfiguration:
   
   def __write_file_update(self) -> None:
     """
-    Private method to write new (or update) attributes in the config file.
-
-    Args:
-      attribute (str): Key of the attribute.
-      value (any): Value of the pair.
+    Private method to write current status of the data in the config file.
     """
+    logger.debug('synching config file')
     with open(self.file_path, 'w') as file:
-      # self.data[attribute] = value
       json.dump(self.data, file)
 
   def setDownloadURL(self, url: str) -> None:
@@ -76,7 +74,14 @@ class DownloadConfiguration:
     """
     return self.data['download_url']
   
-  def appendLecture(self, lecture: any) -> None:
+  def appendLecture(self, lecture: VideoData) -> None:
+    """
+    Save metadata of a video set (a lecture).
+
+    Args:
+      lecture (VideoData): Lecture object to append to the lectures attribute.
+    """
+    logger.debug(f'saving/updating lecture in config file: {lecture['title']}')
     # Create object if it doesn’t exist.
     if not self.data.get('lectures'):
       self.data['lectures'] = []
@@ -89,7 +94,9 @@ class DownloadConfiguration:
       , None
     )
     if existing_match: # Update if it exists.
+      logger.debug('item exists; updating values')
       existing_match.update(lecture)
     else: # Append if it does not exist.
+      logger.debug('item does not exist; appending video set')
       self.data['lectures'].append(lecture)
     return self.__write_file_update()
