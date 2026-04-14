@@ -35,7 +35,7 @@ class DownloadConfiguration:
     else:
       logger.debug('creating configuration file "config.json"')
       file = open(self.file_path, 'w')
-      json.dump(self.data, file)
+      json.dump(self.data, file, indent=4)
       file.close()
 
   def is_new(self) -> bool:
@@ -53,7 +53,7 @@ class DownloadConfiguration:
     """
     logger.debug('synching config file')
     with open(self.file_path, 'w') as file:
-      json.dump(self.data, file)
+      json.dump(self.data, file, indent=4)
 
   def __update_lectures(self, lectures: list[VideoData]) -> None:
     """
