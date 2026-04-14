@@ -36,7 +36,11 @@ def main():
     help='path to the destination folder for the download'
   )
   parser.add_argument(
-    '-s', action='store_true',
+    '-c', '--config-only', action='store_true',
+    help='do not download video; download only the config file'
+  )
+  parser.add_argument(
+    '-s', '--single-lecture', action='store_true',
     help='if set, treat url as single lecture, not the MediaSite catalog'
   )
   parser.add_argument(
@@ -54,7 +58,14 @@ def main():
   logger.debug(f'configured url="{args.url}"')
   logger.debug(f'configured destination="{args.destination}"')
   logger.debug(f'configured verbose={args.verbose}')
-  logger.debug(f'configured s={args.s}')
+  logger.debug(f'configured single_lecture={args.single_lecture}')
+  logger.debug(f'configured config_only={args.config_only}')
 
   # 2. Call driver.
-  driver(args.url, args.destination, args.login_url, args.s)  
+  driver(
+    args.url,
+    args.destination,
+    args.login_url,
+    args.single_lecture,
+    args.config_only
+  )  

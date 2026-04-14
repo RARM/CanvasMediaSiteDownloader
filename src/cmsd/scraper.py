@@ -112,17 +112,17 @@ class Scraper:
     # 3. Wait for iframe to load and videos to load.
     logger.debug('attempting to start player and track requests')
     frame = self.page.frame_locator('#player-iframe')
-    frame.locator('.vjs-poster').wait_for()
+    frame.locator('.vjs-poster').wait_for() # This may be removable.
     video_poster = frame.locator('.vjs-poster')
     video_poster.click()
-    time.sleep(3) # FIXME: Need a way to check the resources have loaded.
+    time.sleep(10) # FIXME: Need a way to check the resources have loaded.
     # 4. Getting title.
     title = self.page.locator('.presentation-title').inner_text()
     logger.debug(f'lecture title retrieved: {title}')
     # 5. Return manifest urls.
     manifests_list = self.__clean_manifests_list(network_url_requests)
     return {'title': title, 'videos': manifests_list}
-  
+
   def get_lecture_m3u8_from_catalog(self, catalog_url: str = None) -> None:
     """
     This method retrieves m3u8 files from a MediaSite catalog.
@@ -131,7 +131,7 @@ class Scraper:
       catalog_url (str): MediaSite catalog URL.
     """
     pass
-  
+
 # NOTE: For future implementation of the catalog, using
 # document.querySelectorAll('.watch-link') gets all the clickable lecture
 # links.
