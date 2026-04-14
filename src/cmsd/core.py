@@ -31,5 +31,6 @@ def driver(
   # 6. Download retrieved videos.
   for video in videos:
     download_videos_set(video, abs_path)
+    # FIXME: Log path of the lectures in the config.
     # conf.update_lecture_filename
   return
