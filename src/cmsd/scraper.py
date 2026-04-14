@@ -121,7 +121,7 @@ class Scraper:
     logger.debug(f'lecture title retrieved: {title}')
     # 5. Return manifest urls.
     manifests_list = self.__clean_manifests_list(network_url_requests)
-    return {'title': title, 'urls': manifests_list}
+    return {'title': title, 'videos': manifests_list}
   
   def get_lecture_m3u8_from_catalog(self, catalog_url: str = None) -> None:
     """
