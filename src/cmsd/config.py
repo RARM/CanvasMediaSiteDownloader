@@ -14,7 +14,7 @@ class DownloadConfiguration:
     file_path (str): Location of the file for this configuration.
     data (dict): Data contained for this download.
   """
-  
+
   def __init__(self, path: str):
     """
     Initialize the DownloadConfiguration class by load or creating an empty
@@ -37,7 +37,7 @@ class DownloadConfiguration:
       file = open(self.file_path, 'w')
       json.dump(self.data, file)
       file.close()
-  
+
   def is_new(self) -> bool:
     """
     Checks whether the inistantiation of this object created a new config file.
@@ -46,7 +46,7 @@ class DownloadConfiguration:
       bool: True if the config did not exist; false otherwise.
     """
     return not self.exists
-  
+
   def __write_file_update(self) -> None:
     """
     Private method to write current status of the data in the config file.
@@ -55,48 +55,52 @@ class DownloadConfiguration:
     with open(self.file_path, 'w') as file:
       json.dump(self.data, file)
 
-  def setDownloadURL(self, url: str) -> None:
+  def __update_lectures(self, lectures: list[VideoData]) -> None:
     """
-    Write the download URL in the config file.
+    Private class that actually handles saving multiple lectures in the config
+    data.
 
     Args:
-      url (str): The download URL.
+      lectures (list[VideoData]): Array of video sets to update/append.
     """
-    self.data['download_url'] = url
-    self.__write_file_update()
-
-  def getDownloadURL(self) -> str:
-    """
-    Get the configured download URL.
-
-    Returns:
-      str: Download URL.
-    """
-    return self.data['download_url']
-  
-  def appendLecture(self, lecture: VideoData) -> None:
-    """
-    Save metadata of a video set (a lecture).
-
-    Args:
-      lecture (VideoData): Lecture object to append to the lectures attribute.
-    """
-    logger.debug(f'saving/updating lecture in config file: {lecture['title']}')
-    # Create object if it doesn’t exist.
+    # 1. Create object if it doesn’t exist.
     if not self.data.get('lectures'):
       self.data['lectures'] = []
-    # Get lecture (if it already exists).
-    existing_match = next(
-      (
-        item for item in self.data['lectures'] if
-        item.get('title') == lecture['title']
+    # Loop through the lectures (video sets).
+    for lecture in lectures:
+      # 2. Get lecture (if it already exists).
+      existing_match = next(
+        (
+          item for item in self.data['lectures'] if
+          item.get('title') == lecture['title']
+        ),
+        None
       )
-      , None
-    )
-    if existing_match: # Update if it exists.
-      logger.debug('item exists; updating values')
-      existing_match.update(lecture)
-    else: # Append if it does not exist.
-      logger.debug('item does not exist; appending video set')
-      self.data['lectures'].append(lecture)
-    return self.__write_file_update()
+      # 3. Update or append video set.
+      if existing_match: # Update if it exists.
+        logger.debug('item exists; updating values')
+        existing_match.update(lecture)
+      else: # Append if it does not exist.
+        logger.debug('item does not exist; appending video set')
+        self.data['lectures'].append(lecture)
+    self.__write_file_update()
+
+  def update_lecture(self, lecture: VideoData) -> None:
+    """
+    Update metadata of a video set (a lecture).
+
+    Args:
+      lecture (VideoData): Lecture object to updates in the lectures attribute.
+    """
+    logger.debug(f'saving/updating lecture in config file: {lecture['title']}')
+    self.__update_lectures([lecture])
+
+  def update_lectures(self, lectures: list[VideoData]) -> None:
+    """
+    Update metadata of multiple video sets (lectures).
+
+    Args:
+      lectures (list[VideoData]): Data to update in the lectures attribute.
+    """
+    logger.debug(f'saving/updating {len(lectures)} video set(s)')
+    self.__update_lectures(lectures)
