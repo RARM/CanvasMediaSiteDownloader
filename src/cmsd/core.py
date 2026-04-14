@@ -26,7 +26,7 @@ def driver(
     conf.appendLecture(videos[0])
   else: # Handle catalog (standard mode).
     pass
-  del scraper
+  scraper.cleanup() # Can't use the object after this.
   # 6. Download retrieved videos.
   for video in videos:
     download_videos_set(video, abs_path)
