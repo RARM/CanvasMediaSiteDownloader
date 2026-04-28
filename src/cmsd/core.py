@@ -22,7 +22,7 @@ def driver(
   scraper = Scraper(download_url) if login_url else Scraper()
   videos = []
   # 5. Get list of videos (use scraper).
-  if single_video and login_url:
+  if single_video:
     videos.append(scraper.get_lecture_m3u8(download_url))
     conf.update_lecture(videos[0])
   else: # Handle catalog (standard mode).
