@@ -1,3 +1,5 @@
+from urllib.parse import urljoin
+
 import logging
 import time
 
@@ -153,7 +155,7 @@ class Scraper:
     catalog_pages = []
     pages = self.page.locator('li.page-item.page-number a.page-link').all()
     for page in pages:
-      url = page.get_attribute('href')
+      url = urljoin(url, page.get_attribute('href'))
       if url is not None:
         catalog_pages.append(url)
     logger.debug(f'a total of {len(pages)} pages found')
@@ -161,12 +163,13 @@ class Scraper:
     lectures_ids = []
     for page in catalog_pages:
       self.page.goto(page)
+      time.sleep(6)
       thumbnails = self.page.locator('.thumbnail-img-container img').all()
       for thumb in thumbnails:
         source = thumb.get_attribute('src')
         # https://fau.mediasite.com/Mediasite/FileServer/Presentation/<lecture_id>/<image_filename>.jpg?authticket=<ticket_id>
         if not source: continue
-        up = url.split('/') # url parts
+        up = source.split('/') # url parts
         lectures_ids.append(up[up.index('Presentation') + 1])
     logger.debug(f'a total of {len(lectures_ids)} lectures found')
     # Finally, build the list with all the lecture IDs.
@@ -179,7 +182,7 @@ class Scraper:
     logger.debug(f'a total of {len(lectures_urls)} URLs generated')
     return lectures_urls
 
-  def get_lecture_m3u8_from_catalog(self, catalog_url: str = None) -> None:
+  def get_lectures_m3u8_from_catalog(self, catalog_url: str = None) -> None:
     """
     This method retrieves m3u8 files from a MediaSite catalog.
 
