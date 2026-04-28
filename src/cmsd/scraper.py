@@ -1,3 +1,5 @@
+from .downloader import VideoData
+
 from urllib.parse import urljoin
 
 import logging
@@ -105,7 +107,7 @@ class Scraper:
     )
     logger.debug('started network requests tracking')
 
-  def get_lecture_m3u8(self, lecture_url: str = None) -> list[str]:
+  def get_lecture_m3u8(self, lecture_url: str = None) -> VideoData:
     """
     Routine to retrieve m3u8 files from a lecture page in MediaSite.
 
@@ -177,10 +179,53 @@ class Scraper:
     lectures_urls = []
     for lecture_id in lectures_ids:
       lectures_urls.append(
-        f'https://fau.mediasite.com/Mediasite/Channel/{catalog_id}/watch/{lecture_id}'
+        urljoin(url, f'/Mediasite/Channel/{catalog_id}/watch/{lecture_id}')
       )
     logger.debug(f'a total of {len(lectures_urls)} URLs generated')
     return lectures_urls
+  
+  def __generate_videoset_from_lectures_list(
+      self,
+      lectures_urls: list[str]
+    ) -> list[VideoData]:
+    """
+    This method uses the list of lectures urls and navigates to each to
+    retrieve the m3u8 files.
+
+    Args:
+      lectures_urls (list[str]): Array of urls of the lectures.
+    
+    Return:
+      list[VideoData]: Array of video sets ready to download.
+    """
+    logger.debug(f'starting routine to retrieve m3u8 files from {len(lectures_urls)} urls')
+    videos_sets = []
+    for lecture_url in lectures_urls:
+      logger.debug(f'processing: {lecture_url}')
+      # 1. Start network requests tracking.
+      logger.debug('starting network requests tracking')
+      network_url_requests = []
+      self.__start_tracking_requests(network_url_requests)
+      # 2. Go to the target URL.
+      logger.debug('navigating to url')
+      self.page.goto(lecture_url)
+      time.sleep(10)
+      # 3. Attempt to start the lecture.
+      logger.debug('attempting to start player and track requests')
+      frame = self.page.frame_locator('#player-iframe')
+      frame.locator('.vjs-poster').wait_for() # This may be removable.
+      video_poster = frame.locator('.vjs-poster')
+      video_poster.click()
+      time.sleep(10) # FIXME: Need a way to check the resources have loaded.
+      # 4. Getting title.
+      title = self.page.locator('.presentation-title').inner_text()
+      logger.debug(f'lecture title retrieved: {title}')
+      # 5. Save manifest urls.
+      manifests_list = self.__clean_manifests_list(network_url_requests)
+      videoset = {'title': title, 'videos': manifests_list}
+      videos_sets.append(videoset)
+    logger.debug(f'retrieved {len(videos_sets)} video(s) set(s)')
+    return videos_sets
 
   def get_lectures_m3u8_from_catalog(self, catalog_url: str = None) -> None:
     """
@@ -197,7 +242,9 @@ class Scraper:
       self.page.goto(catalog_url)
       time.sleep(3)
     # User must be in catalog at this point.
+    # 2. Retrieve video lectures and return video sets.
     lectures_urls = self.__get_url_of_lectures()
+    return self.__generate_videoset_from_lectures_list(lectures_urls)
 
 # NOTE: For future implementation of the catalog, using
 # document.querySelectorAll('.watch-link') gets all the clickable lecture
