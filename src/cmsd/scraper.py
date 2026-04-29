@@ -130,7 +130,7 @@ class Scraper:
     frame.locator('.vjs-poster').wait_for() # This may be removable.
     video_poster = frame.locator('.vjs-poster')
     video_poster.click()
-    time.sleep(10) # FIXME: Need a way to check the resources have loaded.
+    time.sleep(20) # FIXME: Need a way to check the resources have loaded.
     # 4. Getting title.
     title = self.page.locator('.presentation-title').inner_text()
     logger.debug(f'lecture title retrieved: {title}')
@@ -165,7 +165,7 @@ class Scraper:
     lectures_ids = []
     for page in catalog_pages:
       self.page.goto(page)
-      time.sleep(6)
+      time.sleep(10)
       thumbnails = self.page.locator('.thumbnail-img-container img').all()
       for thumb in thumbnails:
         source = thumb.get_attribute('src')
@@ -216,7 +216,7 @@ class Scraper:
       frame.locator('.vjs-poster').wait_for() # This may be removable.
       video_poster = frame.locator('.vjs-poster')
       video_poster.click()
-      time.sleep(10) # FIXME: Need a way to check the resources have loaded.
+      time.sleep(20) # FIXME: Need a way to check the resources have loaded.
       # 4. Getting title.
       title = self.page.locator('.presentation-title').inner_text()
       logger.debug(f'lecture title retrieved: {title}')
